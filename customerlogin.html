@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Customer Login</title>
+  <!-- Include the required scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Include the required stylesheets -->
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1>Customer Login</h1>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+      </div>
+      <div class="text-danger" id="error-message" style="display: none;"></div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+  <script>
+    // This function handles the login form submission
+    function handleLoginFormSubmit(event) {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+  const data = {};
+  
+  for (const [key, value] of formData.entries()) {
+    data[key] = value;
+  }
+
+  fetch("http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/customer/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log(response.body);
+        console.log(data);
+
+        // Create a cart for the customer
+        const username = data.username; // assuming the username field is present in the form
+        fetch(`http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/customer/${username}/makeCart`, {
+          method: "POST",
+        })
+          .then((response) => {
+            if (response.ok) {
+              const username=data.username;
+              console.log(response);
+              console.log("Cart created for customer: " + username);
+              response.text().then((orderIdMessage) => {
+                const orderId = orderIdMessage.split(' ').pop();
+                console.log("Order ID: " + orderId);
+                const orderIdElement = document.createElement("p");
+                const text = document.createTextNode("Your orderID is " + orderId);
+                orderIdElement.appendChild(text);
+                document.querySelector("#login-form").appendChild(orderIdElement);
+                
+                window.location.href = `makepurchase.html?orderId=${orderId}&customer_username=${username}`;
+              });
+            } else {
+              throw new Error("Error creating cart for customer: " + username);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+
+        console.log("login success");
+      } else {
+        throw new Error("Invalid username or password.");
+      }
+    })
+    .catch((error) => {
+      // Display an error message to the user
+      const errorMessage = error.message;
+      const errorElement = document.querySelector("#error-message");
+      errorElement.innerText = errorMessage;
+      errorElement.style.display = "block";
+    });
+}
+    // Attach the login form submit event listener
+    const loginForm = document.querySelector("#login-form");
+    loginForm.addEventListener("submit", handleLoginFormSubmit);
+  </script>
+</body>
+
+</html>

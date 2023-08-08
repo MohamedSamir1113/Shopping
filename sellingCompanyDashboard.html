@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SellingCompDashboard</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <button id="showProductsBtn" class="btn btn-primary me-3">Show Products</button>
+<button id="showSoldProductsBtn" class="btn btn-primary me-3">Show Sold Products</button>
+<a id="addProductLink" href="addproducts.html" class="btn btn-primary">Add Product</a>
+    
+</body>
+<script>
+const showProductsBtn = document.getElementById('showProductsBtn');
+const showSoldProductsBtn = document.getElementById('showSoldProductsBtn');
+const urlParams = new URLSearchParams(window.location.search);
+		const repName = urlParams.get('name');
+showProductsBtn.addEventListener('click', () => {
+  // Redirect to viewproducts.html with repName parameter
+  window.location.href = `viewproducts.html?name=${repName}`;
+});
+
+showSoldProductsBtn.addEventListener('click', () => {
+  // Redirect to viewsoldproducts.html with repName parameter
+  window.location.href = `viewsoldproducts.html?name=${repName}`;
+});
+
+
+addProductLink.addEventListener('click', () => {
+			addProductLink.href = `addproducts.html?name=${repName}`;
+		});
+</script>
+</html>

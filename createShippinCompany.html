@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Shipping Company</title>
+	<!-- Include the required scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+	</style>
+</head>
+<body>
+	<div class="container mt-5">
+		<h1>Create Shipping Company</h1>
+		<form id="create-shipping-company-form">
+			<div class="form-group">
+				<label for="company-name">Company Name:</label>
+				<input type="text" class="form-control" id="company-name" name="name" required>
+			</div>
+			<button type="submit" class="btn btn-primary">Create Company</button>
+		</form>
+		<div class="mt-3">
+			 <h3>Response:</h3>
+			<pre id="response"></pre>
+		</div>
+	</div>
+	<script>
+		// This function handles the create-shipping-company form submission
+		function handleCreateShippingCompanyFormSubmit(event) {
+			event.preventDefault();
+
+			const formData = new FormData(event.target);
+			const data = {};
+			for (const [key, value] of formData.entries()) {
+				data[key] = value;
+			}
+
+			// Make a POST request to the /shoppingtest-1.0-SNAPSHOT/api/shippingCompany/createShippingCompany endpoint with the form data
+			fetch("http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/admin/createShippingCompany", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			})
+			.then((response) => {
+				if (response.ok) {
+					// Display the success message with the company ID
+					response.text().then((data) => {
+                        console.log(data);
+						//const companyId = data.match(/your company id is (\d+)/)[1];
+						document.querySelector("#response").textContent = data;
+                        window.location.href = "AdminDashboard.html";
+					});
+				} else {
+					throw new Error("Failed to create shipping company.");
+				}
+			})
+			.catch((error) => {
+				// Display an error message to the user
+				console.error(error);
+				alert("Failed to create shipping company.");
+			});
+		}
+
+		// Attach the create-shipping-company form submit event listener
+		const createShippingCompanyForm = document.querySelector("#create-shipping-company-form");
+		createShippingCompanyForm.addEventListener("submit", handleCreateShippingCompanyFormSubmit);
+	</script>
+</body>
+</html>

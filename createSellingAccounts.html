@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Selling Company Rep Account</title>
+	<!-- Include the required scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+	</style>
+</head>
+<body>
+	<div class="container mt-5">
+		<h1>Create Selling Company Rep Account</h1>
+		<form id="create-selling-company-form">
+			<div class="form-group">
+				<label for="selling-company-name">Selling Company Name:</label>
+				<input type="text" class="form-control" id="selling-company-name" name="name" required>
+			</div>
+			 <button type="submit" class="btn btn-primary">Create Account</button>
+		</form>
+		<div class="mt-3">
+			<h3>Auto-generated Password:</h3>
+			<p id="selling-company-password"></p>
+		</div>
+	</div>
+	<script>
+		// This function handles the create-selling-company form submission
+		function handleCreateSellingCompanyFormSubmit(event) {
+			event.preventDefault();
+
+			const formData = new FormData(event.target);
+			const data = {};
+			for (const [key, value] of formData.entries()) {
+				data[key] = value;
+			}
+
+			// Make a POST request to the /shoppingtest-1.0-SNAPSHOT/api/sellingCompanyRep/createSellingCompany endpoint with the form data
+			fetch("http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/sellingCompanyRep/createSellingCompany", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			})
+			.then((response) => {
+				if (response.ok) {
+					// Display the auto-generated password to the user
+					response.text().then((data) => {
+						document.querySelector("#selling-company-password").textContent = data.split("\n")[1];
+                        window.location.href = "AdminDashboard.html";
+					});
+				} else {
+					throw new Error("Failed to create selling company rep account.");
+				}
+			})
+			.catch((error) => {
+				// Display an error message to the user
+				console.error(error);
+				alert("Failed to create selling company rep account.");
+			});
+		}
+
+		// Attach the create-selling-company form submit event listener
+		const createSellingCompanyForm = document.querySelector("#create-selling-company-form");
+		createSellingCompanyForm.addEventListener("submit", handleCreateSellingCompanyFormSubmit);
+	</script>
+</body>
+</html>

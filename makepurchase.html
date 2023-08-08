@@ -1,0 +1,143 @@
+<html>
+
+<head>
+    <title>Market</title>
+    <!-- Include the required scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include the required stylesheets -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Market</h1>
+
+        <button  id="viewCurrentBtn" class="btn btn-primary me-3">view Current Orders</button>
+      
+
+        <div class="row">
+            <!-- Use JavaScript to populate the product cards -->
+        </div>
+
+        <button type="button" class="btn btn-success" onclick="purchase()">Purchase Order</button>
+    </div>
+    <script>
+        const viewCurrentBtn = document.getElementById('viewCurrentBtn');
+        const productCards = document.querySelector('.row');
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        const customer_username=urlParams.get('customer_username');
+        viewCurrentBtn.addEventListener('click', () => {
+ 
+  window.location.href = `viewCurrentOrders.html?customer_username=${customer_username}`;
+});
+
+        fetch('http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/sellingCompanyRep/getAvailableProducts')
+            .then(response => response.json())
+            .then(products => {
+                products.forEach(product => {
+                    console.log(product);
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('col-md-4', 'mb-4');
+                    productCard.innerHTML = `
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">${product.productName}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Product ID: ${product.productId}</h6>
+                    <p class="card-text">Price: ${product.productPrice}</p>
+                    <p class="card-text">Available: ${product.available ? 'Yes' : 'No'}</p>
+                    <p class="card-text">SellingCompany: ${product.sellingCompanyRep.name}</p>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(${product.productId})">-</button>
+                      </div>
+                      <input type="number" id="quantity-${product.productId}" class="form-control" value="1">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(${product.productId})">+</button>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addToCart(${orderId}, '${product.productName}', ${product.productId})">Add to Cart</button>
+                  </div>
+                </div>
+              `;
+                    productCards.appendChild(productCard);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to retrieve product list. Please try again later.');
+            });
+
+        function incrementQuantity(productId) {
+            const quantityInput = document.getElementById(`quantity-${productId}`);
+            const currentValue = parseInt(quantityInput.value);
+            quantityInput.value = currentValue + 1;
+        }
+
+        function decrementQuantity(productId) {
+            const quantityInput = document.getElementById(`quantity-${productId}`);
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+        }
+
+        function addToCart(orderId, productName, productId) {
+            const quantityInput = document.getElementById(`quantity-${productId}`);
+            console.log(quantityInput)
+            const quantity = parseInt(quantityInput.value);
+
+            const requestBody = {
+                quantity: quantity
+            };
+
+            fetch(`http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/customer/${orderId}/addToCart/${productName}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+                .then(response => response.text())
+                .then(message => {
+                    console.log(message);
+                    alert(message);
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Error occurred while adding item to cart!');
+                });
+        }
+
+        function purchase() {
+            fetch(`http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/customer/${orderId}/purchase`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Order purchased successfully");
+                        alert("Order purchased successfully");
+                    } else {
+                        console.error("Error occurred while purchasing order");
+                        alert("Error occurred while purchasing order");
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Error occurred while purchasing order!');
+                });
+        }
+    </script>
+</body>
+
+</html>

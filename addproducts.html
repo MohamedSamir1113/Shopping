@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Product</title>
+	<!-- Include the required scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+	</style>
+</head>
+<body>
+	<div class="container mt-5">
+		<h1 class="text-center mb-4">Add Product</h1>
+		<form id="addProductForm">
+			<div class="form-group">
+				<label for="productNameInput">Product Name</label>
+				<input type="text" class="form-control" id="productNameInput" required>
+			</div>
+			<div class="form-group">
+				<label for="productPriceInput">Product Price</label>
+				<input type="number" class="form-control" id="productPriceInput" step="0.01" required>
+			</div>
+			<div class="form-group form-check">
+				<input type="checkbox" class="form-check-input" id="availableInput">
+				<label class="form-check-label" for="availableInput">Available</label>
+			</div>
+			<button type="submit" class="btn btn-primary">Create Product</button>
+		</form>
+	</div>
+	<script>
+		const urlParams = new URLSearchParams(window.location.search);
+		const repName = urlParams.get('name');
+		const addProductForm = document.getElementById('addProductForm');
+		const productNameInput = document.getElementById('productNameInput');
+		const productPriceInput = document.getElementById('productPriceInput');
+		const availableInput = document.getElementById('availableInput');
+
+		addProductForm.addEventListener('submit', event => {
+			event.preventDefault();
+			const product = {
+				productName: productNameInput.value,
+				productPrice: parseFloat(productPriceInput.value),
+				available: availableInput.checked
+			};
+			fetch(`http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/sellingCompanyRep/createProduct/${repName}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(product)
+			})
+			.then(response => response.text())
+			.then(result => {
+				alert(result);
+				addProductForm.reset();
+			})
+			.catch(error => {
+				console.error(error);
+				alert('Failed to create product. Please try again later.');
+			});
+		});
+	</script>
+</body>
+</html>

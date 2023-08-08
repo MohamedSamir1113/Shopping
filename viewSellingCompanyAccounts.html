@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>List of Selling Company Reps</title>
+	<!-- Include the required scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container mt-5">
+		<h1>List of Selling Company Reps</h1>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Selling Company Rep Name</th>
+					<th>Password</th>
+				</tr>
+			</thead>
+			<tbody id="selling-company-rep-list">
+				<!-- Selling company reps will be added dynamically here -->
+			</tbody>
+		</table>
+	</div>
+	<script>
+			// Make a GET request to the /demo-1.0-SNAPSHOT/api/selling/getAllSellingCompanyRep endpoint
+			fetch("http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/admin/getAllSellingCompanyRep")
+			.then((response) => response.json())
+			.then((data) => {
+				// Create a table row for each selling company rep and append it to the selling company rep list
+				const sellingCompanyRepList = document.querySelector("#selling-company-rep-list");
+				data.forEach((sellingCompanyRep) => {
+					const row = document.createElement("tr");
+					row.innerHTML = `
+						<td>${sellingCompanyRep.name}</td>
+						<td>${sellingCompanyRep.password}</td>
+					`;
+					sellingCompanyRepList.appendChild(row);
+				});
+			})
+			.catch((error) => {
+				// Display an error message to the user
+				console.error(error);
+				alert("Failed to fetch selling company reps.");
+			});
+	</script>
+</body>
+</html>

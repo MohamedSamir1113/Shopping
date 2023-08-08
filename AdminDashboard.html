@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Admin Dashboard</title>
+	<!-- Include the required scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+	</style>
+</head>
+<body>
+	<div class="container mt-5">
+		<h1>Admin Dashboard</h1>
+		<!-- Add the two buttons -->
+		<div class="row mt-5">
+			<div class="col-md-6">
+				<a href="createSellingAccounts.html" class="btn btn-primary btn-lg btn-block">Create Selling Company Accounts</a>
+			</div>
+			<div class="col-md-6">
+				<a href="createShippinCompany.html" class="btn btn-primary btn-lg btn-block">Create Shipping Company</a>
+			</div>
+		</div>
+		<!-- Create the tab navigation -->
+		<ul class="nav nav-tabs mt-5" id="admin-tabs" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers" aria-selected="true">View Customers</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="selling-company-accounts-tab" data-toggle="tab" href="#selling-company-accounts" role="tab" aria-controls="selling-company-accounts" aria-selected="false">View Selling Company Accounts</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="shipping-company-tab" data-toggle="tab" href="#shipping-company" role="tab" aria-controls="shipping-company" aria-selected="false">View Shipping Companies</a>
+			</li>
+		</ul>
+		<!-- Create the tab content -->
+		<div class="tab-content mt-3" id="admin-tabs-content">
+			<!-- View Customers tab content -->
+			<div class="tab-pane fade show active" id="customers" role="tabpanel" aria-labelledby="customers-tab">
+				<!-- Load the viewcustomers.html page -->
+				<object type="text/html" data="viewcustomers.html" style="width: 100%; height: 500px;"></object>
+			</div>
+			<!-- View Selling Company Accounts tab content -->
+			<div class="tab-pane fade" id="selling-company-accounts" role="tabpanel" aria-labelledby="selling-company-accounts-tab">
+				<!-- Load the viewSellingCompanyAccounts.html page -->
+				<object type="text/html" data="viewSellingCompanyAccounts.html" style="width: 100%; height: 500px;"></object>
+			</div>
+			<!-- View Shipping Companies tab content -->
+			<div class="tab-pane fade" id="shipping-company" role="tabpanel" aria-labelledby="shipping-company-tab">
+				<!-- Load the viewshippingcompany.html page -->
+				<object type="text/html" data="viewshippingcompany.html" style="width: 100%; height: 500px;"></object>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Current Orders</title>
+    <!-- Include the required scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include the required stylesheets -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Current Orders</h1>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>orderid</th>
+                    <th>Product Name</th>
+                    <th>bought</th>
+                    <th>Selling Company Rep Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Use JavaScript to populate the table rows -->
+            </tbody>
+            <!-- <tfoot>
+				<tr>
+					<td colspan="5" class="text-center">
+						<a id="addProductLink" href="addproducts.html" class="btn btn-primary">Add Product</a>
+					</td>
+				</tr>
+			</tfoot> -->
+        </table>
+    </div>
+    <script>
+        //const addProductLink = document.getElementById('addProductLink');
+        const tableBody = document.querySelector('tbody');
+        const urlParams = new URLSearchParams(window.location.search);
+        const customer_username = urlParams.get('customer_username');
+
+        // addProductLink.addEventListener('click', () => {
+        // 	addProductLink.href = `addproducts.html?name=${repName}`;
+        // });
+
+        fetch(`http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/customer/${customer_username}/orders`)
+            .then(response => response.json())
+            .then(orders => {
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    const productNames = order.products.map(product => product.productName).join(', ');
+                    row.innerHTML = `
+        <td>${order.orderId}</td>
+        <td>${productNames}</td>
+        <td>${order.bought}</td>
+        <td>${order.products[0].sellingCompanyRep.name}</td>
+      `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to retrieve orders list. Please try again later.');
+            });
+    </script>
+</body>
+
+</html>

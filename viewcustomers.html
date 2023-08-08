@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>List of Customers</title>
+	<!-- Include the required scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Include the required stylesheets -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	</style>
+</head>
+<body>
+	<div class="container mt-5">
+		<h1>List of Customers</h1>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Address</th>
+					<th>Phone</th>
+				</tr>
+			</thead>
+			<tbody id="customer-list">
+				<!-- Customer accounts will be added dynamically here -->
+			</tbody>
+		</table>
+	</div>
+	<script>
+		// Make a GET request to the /demo-1.0-SNAPSHOT/api/customer/getAllCustomers endpoint
+		fetch("http://localhost:8080/shoppingtest-1.0-SNAPSHOT/api/admin/getAllCustomers")
+		.then((response) => response.json())
+		.then((data) => {
+			// Create a table row for each customer account and append it to the customer list
+			const customerList = document.querySelector("#customer-list");
+			data.forEach((customer) => {
+				const row = document.createElement("tr");
+				row.innerHTML = `
+					<td>${customer.username}</td>
+					<td>${customer.name}</td>
+					<td>${customer.email}</td>
+					<td>${customer.address}</td>
+					<td>${customer.phone}</td>
+				`;
+				customerList.appendChild(row);
+			});
+		})
+		.catch((error) => {
+			// Display an error message to the user
+			console.error(error);
+			alert("Failed to fetch customer accounts.");
+		});
+	</script>
+</body>
+</html>
